@@ -1,6 +1,8 @@
 const express = require('express')
 const router = express.Router()
 
+const mergedContact = require('../exampleData/mergedContact')
+
 const Customer = require('../class/Customer')
 
 const Zoho = require('../class/Zoho')
@@ -35,12 +37,29 @@ router.get('/flushBooqable', async (req, res, next) => {
 })
 
 router.get('/syncFromZoho', async (req, res, next) => {
-    let contacts = await zoho.getAllContact()
+    let newContacts = []
+    let contactToUpdate = []
 
-    contacts.forEach(async contact => {
-        let newCustomer = Customer.newFromZoho(contact)
-        console.log(newCustomer.getForBooqable())
-        booqable.saveACustomer(newCustomer.getForBooqable())
+    let zohoContacts = await zoho.getAllContact()
+    let booqableCustomers = await booqable.getAllCustomers()
+
+    zohoContacts.forEach(contact => {
+        booqableCustomer = booqableCustomers.find(ele => { return ele[mergedContact.booqable.email] == contact.email })
+        if (booqableCustomer == null) {
+            newContacts.push(Customer.newFromZoho(contact))
+        } else {
+            let customerToUpdate = Customer.newFromZoho(contact)
+            customerToUpdate.id = booqableCustomer.id
+            contactToUpdate.push(customerToUpdate)
+        }
+    })
+
+    console.log("------------NEW CONTACT-------\n", newContacts)
+    console.log("------------UPDATE CONTACT-------\n", contactToUpdate)
+
+
+    newContacts.forEach(async contact => {
+        await booqable.saveACustomer(contact.translateForBooqable()) // await to not have same number in booqable
     });
 
     let customers = await booqable.getAllCustomers()

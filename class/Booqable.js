@@ -12,7 +12,6 @@ module.exports = class Booqable {
 
     async getAllCustomers() {
         try {
-            console.log(`${this.API_ADDRESS}customers?api_key=${this.APIKEY}`)
             let res = await fetch(`${this.API_ADDRESS}customers?api_key=${this.APIKEY}`, {
                 method: 'GET',
                 headers: this.HEADERS,
