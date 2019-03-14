@@ -6,6 +6,7 @@ module.exports = {
         name: "contact_name",
         email: "email",
         phone: "phone",
+        mobilePhone:"mobile",
         billing: {
             address: "billing_address.address",
             zipcode: "billing_address.zip",
@@ -33,7 +34,8 @@ module.exports = {
         id: "id",
         name: "name",
         email: "email",
-        phone: "phone",
+        //phone: "phone",
+        //mobilePhone:"phone",
         shipping:{
             address:""
         }

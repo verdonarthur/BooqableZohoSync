@@ -23,12 +23,16 @@ module.exports = class Customer {
         this.shipping = shipping
     }
 
+    /**
+     * 
+     * @param {*} zohoContact 
+     */
     static newFromZoho(zohoContact) {
         return new Customer(
             resolve(mergedContact.zoho.id, zohoContact),
             resolve(mergedContact.zoho.name, zohoContact),
             resolve(mergedContact.zoho.email, zohoContact),
-            resolve(mergedContact.zoho.phone, zohoContact),
+            resolve(mergedContact.zoho.mobilePhone, zohoContact) != '' ? resolve(mergedContact.zoho.mobilePhone, zohoContact) : resolve(mergedContact.zoho.phone, zohoContact),
             new Address(
                 resolve(mergedContact.zoho.billing.address),
                 resolve(mergedContact.zoho.billing.zipcode),
@@ -46,8 +50,12 @@ module.exports = class Customer {
         )
     }
 
+    /**
+     * 
+     */
     translateForBooqable() {
         let booqableCustomer = {}
+
         booqableCustomer[mergedContact.booqable.name] = this.name
         booqableCustomer[mergedContact.booqable.email] = this.email
         booqableCustomer[mergedContact.booqable.phone] = this.phone

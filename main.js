@@ -29,8 +29,8 @@ app.use((req, res, next) => {
     const err = new Error('Not Found')
     err.status = 404
     //next(err)
-    res.send(404)
+    res.sendStatus(404)
 })
 
 app.listen(port,
-    () => console.log(`App listening on port : ${port}!`))
+    () => console.log(`App running on : https://localhost:${port} !`))

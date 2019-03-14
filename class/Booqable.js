@@ -24,12 +24,12 @@ module.exports = class Booqable {
         }
     }
 
-    async saveACustomer(customer) {
+    async saveANewCustomer(customer) {
         try {
             let res = await fetch(`${this.API_ADDRESS}customers?api_key=${this.APIKEY}`, {
                 method: 'POST',
                 headers: this.HEADERS,
-                body: JSON.stringify(customer)
+                body: { customer: JSON.stringify(customer) }
             })
             return await res.json()
         } catch (e) {
@@ -38,14 +38,28 @@ module.exports = class Booqable {
         }
     }
 
-    async removeACustomer(id){
-        try{
+    async updateACustomer(id, customer) {
+        try {
+            let res = await fetch(`${this.API_ADDRESS}customers/${customer.id}?api_key=${this.APIKEY}`, {
+                method: 'PUT',
+                headers: this.HEADERS,
+                body: { customer: JSON.stringify(customer) }
+            })
+            return await res.json()
+        } catch (e) {
+            console.log(e)
+            return null
+        }
+    }
+
+    async removeACustomer(id) {
+        try {
             let res = await fetch(`${this.API_ADDRESS}customers/${id}/archive?api_key=${this.APIKEY}`, {
                 method: 'DELETE',
                 headers: this.HEADERS
             })
             return await res.json()
-        }catch(e){
+        } catch (e) {
             console.log(e)
             return null
         }

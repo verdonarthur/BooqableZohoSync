@@ -1,0 +1,28 @@
+{
+    "id": "45c9e250-08bf-4479-80f9-6895acaf0ed8",
+    "name": "Mr. Jean Saucisson",
+    "email": "jeansaucisson@test.ch",
+    "phone": "+41790000000",
+    "properties_attributes": [
+        {
+            "type": "Property::Address",
+            "name": "Billing",
+            "address1": null,
+            "address2": "",
+            "zipcode": null,
+            "region": null,
+            "city": null,
+            "country": null
+        },
+        {
+            "type": "Property::Address",
+            "name": "Shipping",
+            "address1": null,
+            "address2": "",
+            "zipcode": null,
+            "region": null,
+            "city": null,
+            "country": null
+        }
+    ]
+}
