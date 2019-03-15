@@ -2,6 +2,8 @@ const mergedContact = require('../exampleData/mergedContact')
 const Customer = require('../class/Customer')
 const Zoho = require('../class/Zoho')
 const Booqable = require('../class/Booqable')
+const Tag = require('../class/Tag')
+
 
 let zoho = new Zoho()
 let booqable = new Booqable()
@@ -19,10 +21,10 @@ module.exports = class Sync {
      */
     static syncContactFrom(system) {
         switch (system) {
-            case this.ZOHO:
+            case Sync.ZOHO():
                 this.syncContactFromZoho()
                 break
-            case this.BOOQABLE:
+            case Sync.BOOQABLE():
                 break
         }
     }
@@ -36,7 +38,8 @@ module.exports = class Sync {
 
         zohoContacts.forEach(contact => {
             let booqableCustomer = booqableCustomers.find(ele => { return ele[mergedContact.booqable.email] == contact.email })
-            this.syncContact(contact, booqableCustomer, this.ZOHO)
+            //let booqableCustomer = booqableCustomers.find(ele => { return ele.tags.find(ele2 => { return ele2.search("ZOHOID") != -1 }) == contact.id })
+            this.syncContact(contact, booqableCustomer, Sync.ZOHO())
         })
 
     }
@@ -47,19 +50,24 @@ module.exports = class Sync {
      * @param {*} secondaryContact 
      * @param {*} whichSystemIsPrimary 
      */
-    static async syncContact(primaryContact, secondaryContact, whichSystemIsPrimary = this.ZOHO) {
+    static async syncContact(primaryContact, secondaryContact, whichSystemIsPrimary = Sync.ZOHO()) {
         switch (whichSystemIsPrimary) {
-            case this.ZOHO:
+            case Sync.ZOHO():
                 // is a new Contact
                 if (secondaryContact == null) {
                     let newCustomer = Customer.newFromZoho(primaryContact)
-                    await booqable.saveANewCustomer(newCustomer.translateForBooqable())
+                    newCustomer = await booqable.saveANewCustomer(newCustomer.translateForBooqable())
+
+                    //Tag.saveCustomerTag(newCustomer.id, new Tag(`ZOHOID=${primaryContact.id}`))
                 } else {
                     let customerToUpdate = Customer.newFromZoho(primaryContact)
+
                     await booqable.updateACustomer(secondaryContact.id, customerToUpdate.translateForBooqable())
+                    
+                    //Tag.saveCustomerTag(secondaryContact.id, new Tag(`ZOHOID=${primaryContact[mergedContact.zoho.id]}`))
                 }
                 break
-            case this.BOOQABLE:
+            case Sync.BOOQABLE():
                 break
         }
 

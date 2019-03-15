@@ -36,6 +36,13 @@ module.exports = {
         email: "email",
         //phone: "phone",
         //mobilePhone:"phone",
+        //"properties_attributes": [
+		//	{
+		//		"type": "Property::Phone",
+		//		"name": "Phone",
+		//		"value": "41790000009"
+		//	}
+		//]
         shipping:{
             address:""
         }

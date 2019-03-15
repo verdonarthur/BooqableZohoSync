@@ -1,20 +1,37 @@
+const Customer = require('../Customer')
+const Booqable = require('./Booqable')
 const fetch = require('node-fetch');
 
-const config = require('../config/config')
+const BOOQABLE = new Booqable()
 
-module.exports = class Booqable {
-    constructor() {
-        this.API_ADDRESS = config.booqable_api_address
-        this.APIKEY = config.booqable_api_key
+module.exports = class BooqableCustomer extends Customer{
 
-        this.HEADERS = { 'Content-Type': 'application/json' /*,"Authorization": `Zoho-authtoken ${this.AUTHTOKEN}`*/ }
+    /**
+     * 
+     * @param {*} id 
+     * @param {*} name 
+     * @param {*} email 
+     */
+    constructor(id,name,email){
+        super(id,name,email,null,null,null)
     }
 
-    async getAllCustomers() {
+    static CUSTOMER_GET_URL(BOOQABLE = BOOQABLE){
+        return `${BOOQABLE.API_ADDRESS}customers?api_key=${BOOQABLE.APIKEY}`
+    }
+
+    static CUSTOMER_POST_URL(BOOQABLE = BOOQABLE, id){
+        return `${BOOQABLE.API_ADDRESS}customers/${id}?api_key=${BOOQABLE.APIKEY}`
+    }
+
+    /**
+     * 
+     */
+    static async getAllCustomers() {
         try {
-            let res = await fetch(`${this.API_ADDRESS}customers?api_key=${this.APIKEY}`, {
+            let res = await fetch(`${BOOQABLE.API_ADDRESS}customers?api_key=${this.BOOQABLE.APIKEY}`, {
                 method: 'GET',
-                headers: this.HEADERS,
+                headers: this.BOOQABLE.HEADERS,
             })
             res = await res.json()
             return res.customers
@@ -24,9 +41,13 @@ module.exports = class Booqable {
         }
     }
 
+    /**
+     * 
+     * @param {*} customer 
+     */
     async saveANewCustomer(customer) {
         try {
-            let res = await fetch(`${this.API_ADDRESS}customers?api_key=${this.APIKEY}`, {
+            let res = await fetch(`${this.BOOQABLE.API_ADDRESS}customers?api_key=${this.BOOQABLE.APIKEY}`, {
                 method: 'POST',
                 headers: this.HEADERS,
                 body: JSON.stringify(customer)
@@ -38,6 +59,11 @@ module.exports = class Booqable {
         }
     }
 
+    /**
+     * 
+     * @param {*} id 
+     * @param {*} customer 
+     */
     async updateACustomer(id, customer) {
         try {
             let res = await fetch(`${this.API_ADDRESS}customers/${id}?api_key=${this.APIKEY}`, {
@@ -52,6 +78,10 @@ module.exports = class Booqable {
         }
     }
 
+    /**
+     * 
+     * @param {*} id 
+     */
     async removeACustomer(id) {
         try {
             let res = await fetch(`${this.API_ADDRESS}customers/${id}/archive?api_key=${this.APIKEY}`, {
