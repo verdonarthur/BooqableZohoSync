@@ -1,4 +1,5 @@
 const express = require('express')
+const CustomerSync = require('../class/sync/CustomerSync')
 const router = express.Router()
 
 
@@ -23,11 +24,12 @@ router.get('/flushBooqable', async (req, res, next) => {
 })
 
 router.get('/syncFromZoho', async (req, res, next) => {
-    /*await Sync.syncContactFromZoho()
+    let customerSync = new CustomerSync()
+    
+    customerSync.completeSync(CustomerSync.SYSTEM.ZOHO)
+    
 
-    let customers = await booqable.getAllCustomers()
-
-    res.send(customers)*/
+    res.send('')
 })
 
 module.exports = router

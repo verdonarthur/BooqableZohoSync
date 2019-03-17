@@ -12,59 +12,77 @@ module.exports = class Booqable {
 
         this.HEADERS = { 'Content-Type': 'application/json' }
     }
-    /*
-    async getAllCustomers() {
+
+    /**
+     * return all record From Zoho by the type in param
+     * @param {*} type 
+     */
+    async fetch(type) {
         try {
-            let res = await fetch(`${this.API_ADDRESS}customers?api_key=${this.APIKEY}`, {
+            let res = await fetch(`${this.API_ADDRESS}${type}?api_key=${this.APIKEY}`, {
                 method: 'GET',
                 headers: this.HEADERS,
             })
-            res = await res.json()
-            return res.customers
+            return await res.json()
+
         } catch (e) {
             console.log(e)
-            return null
+            return e
         }
     }
 
-    async saveANewCustomer(customer) {
+    /**
+     * create a record to booqable
+     * @param {*} type 
+     */
+    async create(type, object) {
+        
         try {
-            let res = await fetch(`${this.API_ADDRESS}customers?api_key=${this.APIKEY}`, {
+            let res = await fetch(`${this.API_ADDRESS}${type}?api_key=${this.APIKEY}`, {
                 method: 'POST',
                 headers: this.HEADERS,
-                body: JSON.stringify(customer)
+                body: JSON.stringify(object)
             })
             return await res.json()
         } catch (e) {
             console.log(e)
-            return null
+            return e
         }
     }
 
-    async updateACustomer(id, customer) {
+    /**
+     * update a record to booqable
+     * @param {*} type 
+     */
+    async update(type, id, object) {
         try {
-            let res = await fetch(`${this.API_ADDRESS}customers/${id}?api_key=${this.APIKEY}`, {
+            let res = await fetch(`${this.API_ADDRESS}${type}/${id}?api_key=${this.APIKEY}`, {
                 method: 'PUT',
                 headers: this.HEADERS,
-                body: JSON.stringify({ customer: customer })
+                body: JSON.stringify(object)
             })
             return await res.json()
         } catch (e) {
             console.log(e)
-            return null
+            return e
         }
     }
 
-    async removeACustomer(id) {
+    /**
+     * will delete a record in booqable
+     * @param {*} type 
+     * @param {*} id 
+     */
+    async delete(type, id){
         try {
-            let res = await fetch(`${this.API_ADDRESS}customers/${id}/archive?api_key=${this.APIKEY}`, {
+            let res = await fetch(`${this.API_ADDRESS}${type}/${id}/archive?api_key=${this.APIKEY}`, {
                 method: 'DELETE',
-                headers: this.HEADERS
+                headers: this.HEADERS,
             })
             return await res.json()
         } catch (e) {
             console.log(e)
-            return null
+            return e
         }
-    }*/
+    }
 }

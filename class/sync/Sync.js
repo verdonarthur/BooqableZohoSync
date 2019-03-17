@@ -8,27 +8,28 @@ module.exports = class Sync {
     }
 
     /**
-     * Will sync local database and booqable with zoho latest change
+     * Will sync local database with zoho latest change
      */
-    async syncFromZoho() {
-        let zohoCustomers = await Customer.getAllFromZoho()
-        console.log(zohoCustomers)
-        zohoCustomers.forEach(zohoCustomer => {
-            let isInDB = Customer.findByZohoID(zohoCustomer.contact_id)
-            console.log(isInDB)
-            if (isInDB){//&& last update date is more recebt on zoho ) 
-                //isInDB.update
-                console.log('update')
-            }else{
-                console.log('add new')
-            }
-        });
+    syncFromZoho() { }
 
-        // TODO SYNC ON BOOQABLE
+    /**
+     * sync local change to zoho
+     */
+    syncToZoho() { }
 
-    }
-
+    /**
+     * sync local change from booqable latest change
+     */
     syncFromBooqable() { }
 
+    /**
+     * sync local change to booqable
+     */
+    syncToBooqable() { }
+
+    /**
+     * 
+     * @param {*} priority 
+     */
     completeSync(priority) { }
 }
