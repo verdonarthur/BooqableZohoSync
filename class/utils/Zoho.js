@@ -83,18 +83,4 @@ module.exports = class Zoho {
         }
     }
 
-    /*
-    async getAllContact() {
-        try {
-            let res = await fetch(`${this.API_ADDRESS}contacts?organization_id=${this.ORGANISATION_ID}`, {
-                method: 'GET',
-                //body:    JSON.stringify(body),
-                headers: this.HEADERS,
-            })
-            res = await res.json()
-            return res.contacts
-        } catch (e) {
-            console.log(e)
-        }
-    }*/
 }

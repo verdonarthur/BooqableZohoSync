@@ -18,13 +18,13 @@ mongoose.connect(config.url_database)
 
 /*+++++++++++++++API ROUTE LOADING++++++++++++++++++*/
 // example : app.use('/api/user', user)
-const customerRouter = require('./routes/customerRouter')
 
 
 app.get('/', (req, res) => {
     res.send("app running")
 });
-app.use('/customer', customerRouter)
+app.use('/customer', require('./routes/customerRouter'))
+app.use('/product', require('./routes/productRouter'))
 
 
 // Catch 404 and forward to error handler

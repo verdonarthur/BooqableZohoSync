@@ -99,6 +99,21 @@ customerSchema.statics.fromBooqable = function (booqableCustomer) {
 // ------------------------------------------ METHODS -------------------------------------------------
 
 /**
+ * Will set the field to sync on the current record
+ */
+customerSchema.methods.setFieldToSync = function (customer) {
+    this.email = customer.email
+    this.displayName = customer.displayName
+    if (customer.zohoLastUpdate) {
+        this.zohoLastUpdate = new Date(customer.zohoLastUpdate)
+    }
+    else {
+        this.booqableLastUpdate = new Date(customer.booqableLastUpdate)
+    }
+
+}
+
+/**
  * Will save or update the record to booqable
  */
 customerSchema.methods.saveToBooqable = async function () {
@@ -145,13 +160,13 @@ customerSchema.methods.saveToZoho = async function () {
         if (this.zohoID) {
             let res = await zoho.update('contacts', this.zohoID, zohoCustomer)
             if (res.code != 0) {
-                Promise.reject(res)
+                throw new Error(JSON.stringify(res))
             }
             return res
         } else {
             let res = await zoho.create('contacts', zohoCustomer)
             if (res.code != 0) {
-                Promise.reject(res)
+                throw new Error(JSON.stringify(res))
             } else {
                 this.zohoID = res.contact.contact_id
                 this.zohoLastUpdate = res.contact.last_modified_time
