@@ -3,5 +3,6 @@ module.exports = {
     zoho_books_authtoken:"",
     zoho_organisation_id:11111,
     booqable_api_key:"",
-    booqable_api_address:"https://example.booqable.com/api/1/"
+    booqable_api_address:"https://example.booqable.com/api/1/",
+    url_database: process.env.MONGODB_URI || 'mongodb://localhost:27017/zobosync',
 }

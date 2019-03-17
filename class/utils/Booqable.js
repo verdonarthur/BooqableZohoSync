@@ -1,15 +1,18 @@
 const fetch = require('node-fetch');
 
-const config = require('../config/config')
+const config = require('../../config/config')
 
+/**
+ * 
+ */
 module.exports = class Booqable {
     constructor() {
         this.API_ADDRESS = config.booqable_api_address
         this.APIKEY = config.booqable_api_key
 
-        this.HEADERS = { 'Content-Type': 'application/json' /*,"Authorization": `Zoho-authtoken ${this.AUTHTOKEN}`*/ }
+        this.HEADERS = { 'Content-Type': 'application/json' }
     }
-
+    /*
     async getAllCustomers() {
         try {
             let res = await fetch(`${this.API_ADDRESS}customers?api_key=${this.APIKEY}`, {
@@ -63,5 +66,5 @@ module.exports = class Booqable {
             console.log(e)
             return null
         }
-    }
+    }*/
 }
