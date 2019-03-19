@@ -25,6 +25,10 @@ module.exports = class Sync {
                     break;
             }
 
+            // if empty
+            if(!systemObjects)
+                return
+
             for (let systemObject of systemObjects) {
                 switch (system) {
                     case SYSTEM.ZOHO:

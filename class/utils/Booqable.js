@@ -14,12 +14,31 @@ module.exports = class Booqable {
     }
 
     /**
-     * return all record From Zoho by the type in param
+     * return all record From Booqable by the type in param
      * @param {*} type 
      */
     async fetch(type) {
         try {
             let res = await fetch(`${this.API_ADDRESS}${type}?api_key=${this.APIKEY}`, {
+                method: 'GET',
+                headers: this.HEADERS,
+            })
+            return await res.json()
+
+        } catch (e) {
+            console.log(e)
+            return e
+        }
+    }
+
+    /**
+     * return one record From booqable by the type and id in param
+     * @param {*} type 
+     * @param {*} id
+     */
+    async fetchOne(type, id) {
+        try {
+            let res = await fetch(`${this.API_ADDRESS}${type}/${id}?api_key=${this.APIKEY}`, {
                 method: 'GET',
                 headers: this.HEADERS,
             })

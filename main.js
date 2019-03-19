@@ -25,7 +25,7 @@ app.get('/', (req, res) => {
 });
 app.use('/customer', require('./routes/customerRouter'))
 app.use('/product', require('./routes/productRouter'))
-
+app.use('/invoice', require('./routes/invoiceRouter'))
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
