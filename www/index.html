@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Booqable <-SYNC-> Zoho </title>
+</head>
+
+<body>
+    <header></header>
+    <main>
+        <h1>Booqable <-SYNC-> Zoho</h1>
+
+        <div>
+            <h2>Customer</h2>
+            <button id="btnCustomer" >Sync customers</button>
+        </div>
+        <div>
+            <h2>Products</h2>
+            <button id="btnProduct">Sync products</button>
+        </div>
+        <div>
+            <h2>Invoices</h2>
+            <button id="btnInvoice">Export orders</button>
+        </div>
+    </main>
+    <footer></footer>
+
+</body>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"
+    integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+
+<script>
+    $("#btnCustomer").click(()=>{
+        $.getJSON('/customer/syncFromZoho')
+    })
+
+    $("#btnProduct").click(()=>{
+        $.getJSON('/product/syncFromZoho')
+    })
+
+    $("#btnInvoice").click(()=>{
+        $.getJSON('/invoice/exportInvoiceToZoho')
+    })
+</script>
+
+</html>

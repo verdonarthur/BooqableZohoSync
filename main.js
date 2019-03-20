@@ -1,8 +1,9 @@
 const express = require('express')
-const app = express()
 const cors = require('cors')
 const mongoose = require('mongoose')
+const path = require('path')
 
+const app = express()
 const config = require('./config/config')
 const port = process.env.PORT || 3000
 
@@ -20,12 +21,11 @@ mongoose.connect(config.url_database)
 // example : app.use('/api/user', user)
 
 
-app.get('/', (req, res) => {
-    res.send("app running")
-});
 app.use('/customer', require('./routes/customerRouter'))
 app.use('/product', require('./routes/productRouter'))
 app.use('/invoice', require('./routes/invoiceRouter'))
+
+app.use('/', express.static(path.resolve(__dirname,'www')))
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {

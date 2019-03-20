@@ -99,9 +99,12 @@ invoiceSchema.statics.saveBooqableOrderToLocalDB = async function () {
         let zohoCustomerID
 
         for (const booqableOrder of booqableOrders) {
-            zohoCustomerID = (await Customer.findByBooqableID(booqableOrder.customerID)).zohoID
-
+            zohoCustomerID = await Customer.findByBooqableID(booqableOrder.customerID)
+            
             if (!zohoCustomerID) { throw new Error(`Customer with booqable ID ${booqableOrder.customerID} is not in local db`) }
+            
+            zohoCustomerID = zohoCustomerID.zohoID
+            
             let localDBInvoice = new Invoice({
                 booqableCustomerID: booqableOrder.customerID,
                 zohoCustomerID: zohoCustomerID,
