@@ -26,8 +26,7 @@ module.exports = class Booqable {
             return await res.json()
 
         } catch (e) {
-            console.log(e)
-            return e
+            return Promise.reject( { error: e })
         }
     }
 
@@ -45,8 +44,7 @@ module.exports = class Booqable {
             return await res.json()
 
         } catch (e) {
-            console.log(e)
-            return e
+            return Promise.reject( { error: e })
         }
     }
 
@@ -64,8 +62,7 @@ module.exports = class Booqable {
             })
             return await res.json()
         } catch (e) {
-            console.log(e)
-            return e
+            return Promise.reject( { error: e })
         }
     }
 
@@ -82,8 +79,7 @@ module.exports = class Booqable {
             })
             return await res.json()
         } catch (e) {
-            console.log(e)
-            return e
+            return Promise.reject( { error: e })
         }
     }
 
@@ -100,8 +96,7 @@ module.exports = class Booqable {
             })
             return await res.json()
         } catch (e) {
-            console.log(e)
-            return e
+            return Promise.reject( { error: e })
         }
     }
 }

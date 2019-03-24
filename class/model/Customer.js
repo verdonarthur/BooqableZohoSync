@@ -136,8 +136,7 @@ customerSchema.methods.saveToBooqable = async function () {
 
         }
     } catch (err) {
-        console.log(err)
-        return err
+        return Promise.reject( { error: err })
     }
 }
 
@@ -175,8 +174,7 @@ customerSchema.methods.saveToZoho = async function () {
 
         }
     } catch (err) {
-        console.log(err)
-        return err
+        return Promise.reject( { error: err })
     }
 }
 

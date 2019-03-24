@@ -150,8 +150,7 @@ productSchema.methods.saveToBooqable = async function () {
 
         }
     } catch (err) {
-        console.log(err)
-        return err
+        return Promise.reject( { error: err })
     }
 }
 
@@ -186,8 +185,7 @@ productSchema.methods.saveToZoho = async function () {
 
         }
     } catch (err) {
-        console.log(err)
-        return err
+        return Promise.reject( { error: err })
     }
 }
 

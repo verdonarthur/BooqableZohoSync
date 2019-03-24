@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors')
 const mongoose = require('mongoose')
 const path = require('path')
+const logger = require('./class/utils/Logger')
 
 const app = express()
 const config = require('./config/config')
@@ -24,8 +25,9 @@ mongoose.connect(config.url_database)
 app.use('/customer', require('./routes/customerRouter'))
 app.use('/product', require('./routes/productRouter'))
 app.use('/invoice', require('./routes/invoiceRouter'))
+app.use('/log', require('./routes/logRouter'))
 
-app.use('/', express.static(path.resolve(__dirname,'client/public')))
+app.use('/', express.static(path.resolve(__dirname, 'client/public')))
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {
@@ -36,4 +38,6 @@ app.use((req, res, next) => {
 })
 
 app.listen(port,
-    () => console.log(`App running on : https://localhost:${port} !`))
+    () => { 
+        logger.info(`App running on : https://localhost:${port} !`)
+    })

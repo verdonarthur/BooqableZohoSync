@@ -1,8 +1,9 @@
 const express = require('express')
-const CustomerSync = require('../class/sync/CustomerSync')
-const Customer = require('../class/model/Customer')
 const router = express.Router()
 
+const CustomerSync = require('../class/sync/CustomerSync')
+const Customer = require('../class/model/Customer')
+const logger = require('../class/utils/Logger')
 
 router.get('/getFromZoho', async (req, res, next) => {
     // TODO
@@ -23,11 +24,12 @@ router.get('/flushBooqable', async (req, res, next) => {
 })
 
 router.get('/', async (req, res, next) => {
+    
     try {
         res.send(await Customer.find())
     } catch (e) {
         res.sendStatus('500').send(e)
-        console.log(e)
+        logger.error(e)
     }
 })
 

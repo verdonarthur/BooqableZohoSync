@@ -1,3 +1,5 @@
+const logger = require('../utils/Logger')
+
 const SYSTEM = { ZOHO: 1, BOOQABLE: 2 }
 
 
@@ -26,7 +28,7 @@ module.exports = class Sync {
             }
 
             // if empty
-            if(!systemObjects)
+            if (!systemObjects)
                 return
 
             for (let systemObject of systemObjects) {
@@ -57,15 +59,15 @@ module.exports = class Sync {
                         isInDB.setFieldToSync(object)
 
                         await isInDB.save()
-                        console.log('update : ', object)
-                    } else { console.log('latest change already sync') }
+                        logger.info('update : ' + JSON.stringify(object))
+                    } else { logger.info('latest change already sync for :' + JSON.stringify(object)) }
                 } else {
                     await object.save()
-                    console.log('add new : ', object)
+                    logger.info('latest change already sync for :' + JSON.stringify(object))
                 }
             }
         } catch (err) {
-            console.log(err)
+            logger.error(err)
             return err
         }
     }
@@ -127,26 +129,24 @@ module.exports = class Sync {
         try {
             switch (priority) {
                 case SYSTEM.ZOHO:
-                    console.log("=========== ZOHO PRIORITY ===========\n")
-                    console.log("----------- FROM ZOHO SYNC -----------\n")
+                    logger.info("Begin sync From Zoho")
                     await this.syncFromZoho()
-                    console.log("----------- TO BOOQABLE SYNC -----------\n")
+                    logger.info("Begin sync to Booqable")
                     await this.syncToBooqable()
-                    console.log("----------- FROM BOOQABLE SYNC -----------\n")
+                    logger.info("Begin sync From Booqable")
                     await this.syncFromBooqable()
-                    console.log("----------- TO ZOHO SYNC -----------\n")
+                    logger.info("Begin sync to Zoho")
                     await this.syncToZoho()
                     break;
 
                 case SYSTEM.BOOQABLE:
-                    console.log("=========== ZOHO PRIORITY ===========\n")
-                    console.log("----------- FROM BOOQABLE SYNC -----------\n")
+                    logger.info("Begin sync From Booqable")
                     await this.syncFromBooqable()
-                    console.log("----------- TO ZOHO SYNC -----------\n")
+                    logger.info("Begin sync to Zoho")
                     await this.syncToZoho()
-                    console.log("----------- FROM ZOHO SYNC -----------\n")
+                    logger.info("Begin sync From Zoho")
                     await this.syncFromZoho()
-                    console.log("----------- TO BOOQABLE SYNC -----------\n")
+                    logger.info("Begin sync to Booqable")
                     await this.syncToBooqable()
                     break;
 
@@ -154,7 +154,7 @@ module.exports = class Sync {
                     break;
             }
         } catch (err) {
-            console.log(err)
+            logger.error(err)
             return err
         }
     }

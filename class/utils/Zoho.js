@@ -27,7 +27,7 @@ module.exports = class Zoho {
             res = await res.json()
             return res
         } catch (e) {
-            console.log(e)
+            return Promise.reject( { error: e })
         }
     }
 
@@ -53,7 +53,7 @@ module.exports = class Zoho {
             res = await res.json()
             return res
         } catch (e) {
-            console.log(e)
+            return Promise.reject( { error: e })
         }
     }
 
@@ -80,7 +80,7 @@ module.exports = class Zoho {
             res = await res.json()
             return res
         } catch (e) {
-            console.log(e)
+            return Promise.reject( { error: e })
         }
     }
 

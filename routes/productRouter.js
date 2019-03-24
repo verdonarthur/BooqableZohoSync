@@ -1,7 +1,9 @@
 const express = require('express')
+const router = express.Router()
 const ProductSync = require('../class/sync/ProductSync')
 const Product = require('../class/model/Product')
-const router = express.Router()
+const logger = require('../class/utils/Logger')
+
 
 
 router.get('/getFromZoho', async (req, res, next) => {
@@ -28,16 +30,16 @@ router.get('/', async (req, res, next) => {
         res.send(await Product.find())
     } catch (e) {
         res.sendStatus('500').send(e)
-        console.log(e)
+        logger.error(e)
     }
 })
 
 router.get('/syncFromZoho', async (req, res, next) => {
     let productSync = new ProductSync()
-    
+
     let data = await productSync.completeSync(ProductSync.SYSTEM.ZOHO)
-    
-    res.send(JSON.stringify(data))
+
+    res.sendStatus(200).send(JSON.stringify(data))
 })
 
 module.exports = router

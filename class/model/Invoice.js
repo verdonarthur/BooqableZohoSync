@@ -117,8 +117,7 @@ invoiceSchema.statics.saveBooqableOrderToLocalDB = async function () {
             await localDBInvoice.save()
         }
     } catch (err) {
-        console.log(err)
-        return { error: err }
+        return Promise.reject( { error: err })
     }
 }
 
@@ -141,12 +140,10 @@ invoiceSchema.methods.saveToZoho = async function () {
         if (res.code != 0) {
             throw new Error(JSON.stringify(res))
         } else {
-            console.log('new invoice in zoho : ', zohoInvoice)
             return await res
         }
     } catch (err) {
-        console.log(err)
-        return { error: err }
+        return Promise.reject( { error: err })
     }
 }
 

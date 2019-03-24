@@ -43,8 +43,7 @@ class BooqableOrderLine {
 
             return lines
         } catch (err) {
-            console.log(err)
-            return { error: err }
+            return Promise.reject( { error: err })
         }
     }
 }
@@ -79,8 +78,7 @@ module.exports = class BooqableOrder {
 
             return ordersWithDetail
         } catch (err) {
-            console.log(err)
-            return { error: err }
+            return Promise.reject( { error: err })
         }
     }
 
@@ -94,8 +92,7 @@ module.exports = class BooqableOrder {
             return new BooqableOrder(tmpOrder.customer_id, await BooqableOrderLine.createFromBooqableOrderLines(tmpOrder.lines), tmpOrder.number)
 
         } catch (err) {
-            console.log(err)
-            return { error: err }
+            return Promise.reject( { error: err })
         }
     }
 }
