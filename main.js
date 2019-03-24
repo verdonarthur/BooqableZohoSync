@@ -5,7 +5,7 @@ const path = require('path')
 
 const app = express()
 const config = require('./config/config')
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3001
 
 
 
@@ -25,7 +25,7 @@ app.use('/customer', require('./routes/customerRouter'))
 app.use('/product', require('./routes/productRouter'))
 app.use('/invoice', require('./routes/invoiceRouter'))
 
-app.use('/', express.static(path.resolve(__dirname,'www')))
+app.use('/', express.static(path.resolve(__dirname,'client/public')))
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {

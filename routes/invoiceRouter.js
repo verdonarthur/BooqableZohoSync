@@ -2,6 +2,14 @@ const express = require('express')
 const Invoice = require('../class/model/Invoice')
 const router = express.Router()
 
+router.get('/', async (req, res, next) => {
+    try {
+        res.send(await Invoice.find())
+    } catch (e) {
+        res.sendStatus('500').send(e)
+        console.log(e)
+    }
+})
 
 router.get('/exportInvoiceToZoho', async (req, res, next) => {
     try {
