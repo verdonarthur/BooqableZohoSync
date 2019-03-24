@@ -11,6 +11,7 @@ router.get('/', (req, res, next) => {
         limit: 30,
         start: 0,
         order: 'desc',
+        includeIds:true
       };
 
       logger.query(options, function (err, results) {
@@ -18,7 +19,7 @@ router.get('/', (req, res, next) => {
           res.status(500).send(err)
         }
       
-        res.send(results)
+        res.send(results.mongodb)
       });      
     
 

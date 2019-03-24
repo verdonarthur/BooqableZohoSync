@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import CustomerPage from './CustomersPage';
 import ProductsPage from './ProductsPage';
+import HomePage from './HomePage';
 
 
 
@@ -100,7 +101,7 @@ class Dashboard extends React.Component {
 
     constructor() {
         super()
-        this.state.page = CustomerPage
+        this.state.page = HomePage
     }
 
     handleDrawerOpen = () => {
@@ -124,7 +125,8 @@ class Dashboard extends React.Component {
 
             case PAGE.HOME:
             default:
-
+                
+            this.setState({ page: HomePage })
                 break;
         }
     }
