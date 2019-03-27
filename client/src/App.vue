@@ -4,7 +4,7 @@
       <v-list>
         <v-list-tile :to="{ name: 'home'}">
           <v-list-tile-action>
-            <v-icon color="blue">star</v-icon>
+            <v-icon color="blue">dashboard</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Dashboard</v-list-tile-title>
@@ -13,7 +13,7 @@
 
         <v-list-tile :to="{ name: 'customers'}">
           <v-list-tile-action>
-            <v-icon color="blue">star</v-icon>
+            <v-icon color="blue">contacts</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Customers</v-list-tile-title>
@@ -22,7 +22,7 @@
 
         <v-list-tile :to="{ name: 'products'}">
           <v-list-tile-action>
-            <v-icon color="blue">star</v-icon>
+            <v-icon color="blue">local_grocery_store</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Products</v-list-tile-title>
@@ -31,7 +31,7 @@
 
         <v-list-tile :to="{ name: 'invoices'}">
           <v-list-tile-action>
-            <v-icon color="blue">star</v-icon>
+            <v-icon color="blue">local_atm</v-icon>
           </v-list-tile-action>
           <v-list-tile-content>
             <v-list-tile-title>Invoices</v-list-tile-title>

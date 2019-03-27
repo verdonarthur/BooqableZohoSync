@@ -1,8 +1,8 @@
 <template>
   <v-container fluid grid-list-xl>
+    <h1>Customers</h1>
     <v-layout row justify-space-between>
-      <v-flex md11>
-        <h1>Customers</h1>
+      <v-flex md11 s12>
         <v-data-table :headers="headers" :items="customers" class="elevation-1">
           <template v-slot:items="props">
             <td>{{ props.item.displayName }}</td>
@@ -16,12 +16,38 @@
         <v-btn
           :loading="isSyncing"
           :disabled="isSyncing"
-          color="blue-grey"
-          class="white--text"
+          color="blue"
+          medium
+          block
+          outline
           @click="syncCustomer()"
         >
           Sync
-          <v-icon right dark>cloud_upload</v-icon>
+          <v-icon right dark>sync</v-icon>
+        </v-btn>
+        <v-btn
+          :loading="isSyncing"
+          :disabled="isSyncing"
+          color="blue"
+          medium
+          block
+          outline
+          @click="syncCustomer()"
+        >
+          -> Zoho
+          <v-icon right dark>sync</v-icon>
+        </v-btn>
+        <v-btn
+          :loading="isSyncing"
+          :disabled="isSyncing"
+          color="blue"
+          medium
+          block
+          outline
+          @click="syncCustomer()"
+        >
+          -> Booqable
+          <v-icon right dark>sync</v-icon>
         </v-btn>
       </v-flex>
     </v-layout>
@@ -43,12 +69,10 @@ export default {
   },
   methods: {
     syncCustomer() {
-      this.isSyncing = true
+      this.isSyncing = true;
       Customer.sync().then(data => {
-        this.isSyncing = false
-      })
-      
-      
+        this.isSyncing = false;
+      });
     }
   },
   data: () => {
@@ -63,9 +87,9 @@ export default {
         { text: "Zoho ID", value: "zohoID" },
         { text: "Booqable ID", value: "booqableID" }
       ],
-      customers: [],      
-      isSyncing:false,
-    }
+      customers: [],
+      isSyncing: false
+    };
   }
 };
 </script>
