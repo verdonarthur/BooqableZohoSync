@@ -27,7 +27,8 @@ app.use('/product', require('./routes/productRouter'))
 app.use('/invoice', require('./routes/invoiceRouter'))
 app.use('/log', require('./routes/logRouter'))
 
-app.use('/', express.static(path.resolve(__dirname, 'client/public')))
+//app.use('/', express.static(path.resolve(__dirname, 'client/public')))
+app.use('/', express.static(path.resolve(__dirname, 'www')))
 
 // Catch 404 and forward to error handler
 app.use((req, res, next) => {

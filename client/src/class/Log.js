@@ -1,9 +1,9 @@
 import BasicResource from './BasicResource'
 
-class Logs extends BasicResource {
+class Log extends BasicResource {
     static async getAll(){
         return await super.getAll('log')
     }
   }
   
-  export default Logs
+  export default Log

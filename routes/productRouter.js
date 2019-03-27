@@ -4,16 +4,6 @@ const ProductSync = require('../class/sync/ProductSync')
 const Product = require('../class/model/Product')
 const logger = require('../class/utils/Logger')
 
-
-
-router.get('/getFromZoho', async (req, res, next) => {
-    // TODO
-})
-
-router.get('/getFromBooqable', async (req, res, next) => {
-    // TODO
-})
-
 router.get('/flushBooqable', async (req, res, next) => {
     /*let customers = await booqable.getAllCustomers()
     let msg = []
@@ -34,7 +24,7 @@ router.get('/', async (req, res, next) => {
     }
 })
 
-router.get('/syncFromZoho', async (req, res, next) => {
+router.get('/sync', async (req, res, next) => {
     let productSync = new ProductSync()
 
     let data = await productSync.completeSync(ProductSync.SYSTEM.ZOHO)

@@ -6,7 +6,17 @@ class BasicResource {
             return data.json()
         } catch (e) {
             console.log(e)
-            return {}
+            return Promise.reject()
+        }
+    }
+
+    static async sync(resource){
+        try {
+            let data = await fetch(`//localhost:3001/${resource}/sync`, { accept: 'application/json' })
+            return data.json()
+        } catch (e) {
+            console.log(e)
+            return Promise.reject()
         }
     }
 }
