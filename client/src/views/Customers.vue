@@ -13,42 +13,25 @@
         </v-data-table>
       </v-flex>
       <v-flex>
+        <h2>Manual Sync</h2>
         <v-btn
           :loading="isSyncing"
           :disabled="isSyncing"
           color="blue"
-          medium
-          block
-          outline
-          @click="syncCustomer()"
-        >
-          Sync
-          <v-icon right dark>sync</v-icon>
+          medium block outline @click="syncCustomer()" >Sync<v-icon right dark>sync</v-icon>
+        </v-btn>
+        <!--<v-btn
+          :loading="isSyncing"
+          :disabled="isSyncing"
+          color="blue"          
+          medium block outline @click="syncCustomer()" >To Zoho<v-icon right dark>sync</v-icon>
         </v-btn>
         <v-btn
           :loading="isSyncing"
           :disabled="isSyncing"
-          color="blue"
-          medium
-          block
-          outline
-          @click="syncCustomer()"
-        >
-          -> Zoho
-          <v-icon right dark>sync</v-icon>
-        </v-btn>
-        <v-btn
-          :loading="isSyncing"
-          :disabled="isSyncing"
-          color="blue"
-          medium
-          block
-          outline
-          @click="syncCustomer()"
-        >
-          -> Booqable
-          <v-icon right dark>sync</v-icon>
-        </v-btn>
+          color="blue"          
+          medium block outline @click="syncCustomer()" >To Booqable<v-icon right dark>sync</v-icon>
+        </v-btn>-->
       </v-flex>
     </v-layout>
   </v-container>
