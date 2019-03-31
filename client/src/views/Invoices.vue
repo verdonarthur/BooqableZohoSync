@@ -20,6 +20,7 @@
           <td>{{ props.item.reference }}</td>
           <td class="text-xs-right">{{ props.item.startDate }}</td>
           <td class="text-xs-right">{{ props.item.stopDate }}</td>
+          <td class="text-xs-right">{{ props.item.isSaveInZoho }}</td>
         </template>
       </v-data-table>
     </div>
@@ -62,7 +63,8 @@ export default {
           value: "reference"
         },
         { text: "startDate", value: "startDate" },
-        { text: "stopDate", value: "stopDate" }
+        { text: "stopDate", value: "stopDate" },
+        { text: "saved in zoho", value: "isSaveInZoho" }        
       ],
       invoices: [],
 

@@ -15,19 +15,19 @@ router.get('/', async (req, res, next) => {
 router.get('/exportInvoiceToZoho', async (req, res, next) => {
     try {
         logger.info('saving invoice to local db')
-        //await Invoice.saveBooqableOrderToLocalDB()
+        await Invoice.saveBooqableOrderToLocalDB()
 
         logger.info('------------------ finding new invoice to save to zoho ------------------')
         let invoices = await Invoice.find()
         logger.info(invoices)
         for (const invoice of invoices) {
             invoice.saveToZoho()
-            //logger.info('new invoice save to zoho' + JSON.stringify(invoice))
+            logger.info('new invoice save to zoho' + JSON.stringify(invoice))
         }
 
         res.status(200).send({ msg: "OK" })
     } catch (err) {
-        //logger.error(err)
+        logger.error(err)
         console.log(err)
         res.send({ error: err })
     }

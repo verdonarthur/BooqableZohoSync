@@ -56,7 +56,7 @@ invoiceLineSchema.statics.formatArrayOfLinesForZoho = async function (lines, cus
         if (productLinked.description) {
             line.description = description + `\nDescription du produit : ${productLinked.description}`
         }
-        
+
         zohoLines.push(line.formatForZoho())
     }
 
@@ -68,7 +68,7 @@ invoiceLineSchema.methods.formatForZoho = function () {
     return {
         item_id: this.zohoItemID,
         title: this.title,
-        rate: this.totalPriceInCents / 100,
+        rate: (this.totalPriceInCents / 100) / this.quantity,
         quantity: this.quantity,
         description: this.description
     }
@@ -109,6 +109,10 @@ let invoiceSchema = new mongoose.Schema({
     },
     lines: {
         type: [invoiceLineSchema],
+    },
+    isSaveInZoho: {
+        type: Boolean,
+        default:false
     }
 }, { timestamps: true })
 
@@ -170,18 +174,19 @@ invoiceSchema.methods.saveToZoho = async function () {
                 `Location du ${Utils.formatDateForDescrition(this.startDate)} au ${Utils.formatDateForDescrition(this.stopDate)}`
             )
         }
-        console.log(zohoInvoice)
 
+        let res = await zoho.create('invoices', zohoInvoice)
 
-        /*let res = await zoho.create('invoices', zohoInvoice)
+        this.isSaveInZoho = true
+        await this.save()
+
         if (res.code != 0) {
             throw new Error(JSON.stringify(res))
         } else {
             return await res
-        }*/
+        }
     } catch (err) {
-        console.log(err)
-        //return Promise.reject({ error: err })
+        return Promise.reject({ error: err })
     }
 }
 
