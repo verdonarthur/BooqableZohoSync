@@ -16,7 +16,7 @@ router.get('/flushBooqable', async (req, res, next) => {
 })
 
 router.get('/', async (req, res, next) => {
-    
+
     try {
         res.send(await Customer.find())
     } catch (e) {
@@ -26,11 +26,38 @@ router.get('/', async (req, res, next) => {
 })
 
 router.get('/sync', async (req, res, next) => {
-    let customerSync = new CustomerSync()
+    try {
+        let customerSync = new CustomerSync()
+        let data = await customerSync.completeSync(CustomerSync.SYSTEM.ZOHO)
+        res.send(JSON.stringify(data))
+    } catch (e) {
+        res.sendStatus(500).send(e)
+        logger.error(e)
+    }
+})
 
-    let data = await customerSync.completeSync(CustomerSync.SYSTEM.ZOHO)
+router.get('/sync/:system', async (req, res, next) => {
+    try {
+        let customerSync = new CustomerSync()
+        let data = { syncFrom: null, syncTo: null }
+        switch (req.params.system) {
+            case "zoho":
+                data.syncFrom = await customerSync.syncFromZoho()
+                data.syncTo = await customerSync.syncToBooqable()
+                break;
+            case "booqable":
+                data.syncFrom = await customerSync.syncFromBooqable()
+                data.syncTo = await customerSync.syncToZoho()
+                break;
+            default:
+            break;
+        }
+        res.send(JSON.stringify(data))
 
-    res.send(JSON.stringify(data))
+    } catch (e) {
+        res.sendStatus(500).send(e)
+        logger.error(e)
+    }
 })
 
 module.exports = router

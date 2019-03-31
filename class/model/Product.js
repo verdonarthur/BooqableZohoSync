@@ -40,8 +40,16 @@ let productSchema = new mongoose.Schema({
  */
 productSchema.statics.getAllFromZoho = async function () {
     let zoho = new Zoho()
-    let res = await zoho.fetch('items')
-    return res.items
+    let items = []
+    let res = {}
+    let indexPage = 1
+
+    do {
+        res = await zoho.fetch('items', { page: indexPage })
+        items = items.concat(res.items)
+        indexPage++
+    } while (res.page_context.has_more_page)
+    return items
 }
 
 /**

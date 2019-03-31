@@ -1,5 +1,6 @@
 const fetch = require('node-fetch');
 const FormData = require('form-data');
+const Util = require('./Utils')
 
 const config = require('../../config/config')
 
@@ -17,10 +18,13 @@ module.exports = class Zoho {
     /**
      * return all record From Zoho by the type in param
      * @param {*} type 
+     * @param {*} params
      */
-    async fetch(type) {
+    async fetch(type, params = {}) {
+        params = Util.objectToURIParam(params)
+
         try {
-            let res = await fetch(`${this.API_ADDRESS}${type}?organization_id=${this.ORGANISATION_ID}`, {
+            let res = await fetch(`${this.API_ADDRESS}${type}?organization_id=${this.ORGANISATION_ID}&${params}`, {
                 method: 'GET',
                 headers: this.HEADERS,
             })

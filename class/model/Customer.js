@@ -39,8 +39,15 @@ let customerSchema = new mongoose.Schema({
  */
 customerSchema.statics.getAllFromZoho = async function () {
     let zoho = new Zoho()
-    let res = await zoho.fetch('contacts')
-    return res.contacts
+    let contacts = []
+    let res = {}
+    let indexPage = 1
+    do {
+        res = await zoho.fetch('contacts', { page: indexPage })
+        contacts = contacts.concat(res.contacts)
+        indexPage++
+    } while (res.page_context.has_more_page)
+    return contacts
 }
 
 /**
@@ -136,7 +143,7 @@ customerSchema.methods.saveToBooqable = async function () {
 
         }
     } catch (err) {
-        return Promise.reject( { error: err })
+        return Promise.reject({ error: err })
     }
 }
 
@@ -174,7 +181,7 @@ customerSchema.methods.saveToZoho = async function () {
 
         }
     } catch (err) {
-        return Promise.reject( { error: err })
+        return Promise.reject({ error: err })
     }
 }
 
