@@ -15,7 +15,7 @@
       </v-btn>
     </div>
     <div>
-      <v-data-table :headers="headers" :items="products" class="elevation-1">
+      <v-data-table :headers="headers" :items="invoices" class="elevation-1">
         <template v-slot:items="props">
           <td>{{ props.item.reference }}</td>
           <td class="text-xs-right">{{ props.item.startDate }}</td>
@@ -64,7 +64,7 @@ export default {
         { text: "startDate", value: "startDate" },
         { text: "stopDate", value: "stopDate" }
       ],
-      products: [],
+      invoices: [],
 
       isSyncing: false
     };

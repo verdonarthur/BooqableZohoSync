@@ -45,13 +45,19 @@ invoiceLineSchema.statics.convertFromBooqableOrderLineArray = function (booqable
     return invoiceLines
 }
 
-invoiceLineSchema.statics.formatArrayOfLinesForZoho = function (lines, customQuantity, description) {
+invoiceLineSchema.statics.formatArrayOfLinesForZoho = async function (lines, customQuantity, description) {
     let zohoLines = []
+    description = description ? description : ''
 
     for (const line of lines) {
+        let productLinked = await line.getProductLinked()
+        line.quantity = customQuantity ? customQuantity : line.quantity
+        line.description = description
+        if (productLinked.description) {
+            line.description = description + `\nDescription du produit : ${productLinked.description}`
+        }
+        
         zohoLines.push(line.formatForZoho())
-        zohoLines.quantity = customQuantity ? customQuantity : zohoLines.quantity
-        zohoLines.description = description ? description : ''
     }
 
     return zohoLines
@@ -63,8 +69,13 @@ invoiceLineSchema.methods.formatForZoho = function () {
         item_id: this.zohoItemID,
         title: this.title,
         rate: this.totalPriceInCents / 100,
-        quantity: this.quantity
+        quantity: this.quantity,
+        description: this.description
     }
+}
+
+invoiceLineSchema.methods.getProductLinked = async function () {
+    return (await (new Booqable()).fetchOne('product_groups', this.booqableItemID)).product_group
 }
 
 
@@ -73,9 +84,9 @@ const InvoiceLine = mongoose.model('InvoiceLine', invoiceLineSchema)
 
 
 let invoiceSchema = new mongoose.Schema({
-    booqableID:{
-        type:String,
-        unique:true
+    booqableID: {
+        type: String,
+        unique: true
     },
     booqableCustomerID: {
         type: String,
@@ -84,11 +95,11 @@ let invoiceSchema = new mongoose.Schema({
     zohoCustomerID: {
         type: String,
     },
-    startDate:{
-        type:Date
+    startDate: {
+        type: Date
     },
-    stopDate:{
-        type:Date
+    stopDate: {
+        type: Date
     },
     nbrLocationDay: {
         type: Number
@@ -121,20 +132,19 @@ invoiceSchema.statics.saveBooqableOrderToLocalDB = async function () {
 
             zohoCustomerID = zohoCustomerID.zohoID
 
-
             let localDBInvoice = new Invoice({
                 booqableID: booqableOrder.id,
                 booqableCustomerID: booqableOrder.customerID,
                 zohoCustomerID: zohoCustomerID,
-                startDate:new Date(booqableOrder.starts_at),
-                stopDate:new Date(booqableOrder.stops_at),
-                nbrLocationDay: (new Date(booqableOrder.stops_at) - new Date(booqableOrder.starts_at)) / (1000 * 60 * 60 * 24),
+                startDate: booqableOrder.startsAt,
+                stopDate: booqableOrder.stopsAt,
+                nbrLocationDay: booqableOrder.getNbrDay(),
                 reference: `Booqable order ${booqableOrder.number}`,
                 lines: InvoiceLine.convertFromBooqableOrderLineArray(booqableOrder.lines)
             })
 
             // TODO : ARCHIVE ORDER
-            
+
             await localDBInvoice.save()
         }
     } catch (err) {
@@ -150,23 +160,28 @@ invoiceSchema.statics.saveBooqableOrderToLocalDB = async function () {
 invoiceSchema.methods.saveToZoho = async function () {
     let zoho = new Zoho()
 
-    let zohoInvoice = {
-        customer_id: this.zohoCustomerID,
-        reference_number: this.reference,
-        line_items: InvoiceLine.formatArrayOfLinesForZoho(this.lines,
-            this.nbrLocationDay,
-            `Location du ${Utils.formatDateForDescrition(this.startDate)} au ${Utils.formatDateForDescrition(this.stopDate)} \n`)
-    }
-
     try {
-        let res = await zoho.create('invoices', zohoInvoice)
+        let zohoInvoice = {
+            customer_id: this.zohoCustomerID,
+            reference_number: this.reference,
+            line_items: await InvoiceLine.formatArrayOfLinesForZoho(
+                this.lines,
+                this.nbrLocationDay,
+                `Location du ${Utils.formatDateForDescrition(this.startDate)} au ${Utils.formatDateForDescrition(this.stopDate)}`
+            )
+        }
+        console.log(zohoInvoice)
+
+
+        /*let res = await zoho.create('invoices', zohoInvoice)
         if (res.code != 0) {
             throw new Error(JSON.stringify(res))
         } else {
             return await res
-        }
+        }*/
     } catch (err) {
-        return Promise.reject({ error: err })
+        console.log(err)
+        //return Promise.reject({ error: err })
     }
 }
 

@@ -43,7 +43,7 @@ class BooqableOrderLine {
 
             return lines
         } catch (err) {
-            return Promise.reject( { error: err })
+            return Promise.reject({ error: err })
         }
     }
 }
@@ -55,10 +55,17 @@ module.exports = class BooqableOrder {
      * @param {*} customerID 
      * @param {*} lines 
      */
-    constructor(customerID, lines, number) {
+    constructor(id, customerID, lines, number, startsAt, stopsAt) {
+        this.id=id
         this.customerID = customerID
         this.lines = lines
         this.number = number
+        this.startsAt = new Date(startsAt)
+        this.stopsAt = new Date(stopsAt)
+    }
+
+    getNbrDay(){
+        return Math.ceil((this.stopsAt - this.startsAt) / (1000 * 60 * 60 * 24))
     }
 
     /**
@@ -76,9 +83,10 @@ module.exports = class BooqableOrder {
                 }
             }
 
+            console.log(ordersWithDetail)
             return ordersWithDetail
         } catch (err) {
-            return Promise.reject( { error: err })
+            return Promise.reject({ error: err })
         }
     }
 
@@ -89,10 +97,15 @@ module.exports = class BooqableOrder {
     static async getOrderDetail(orderID) {
         try {
             let tmpOrder = (await booqable.fetchOne('orders', orderID)).order
-            return new BooqableOrder(tmpOrder.customer_id, await BooqableOrderLine.createFromBooqableOrderLines(tmpOrder.lines), tmpOrder.number)
+            return new BooqableOrder(tmpOrder.id,
+                tmpOrder.customer_id, 
+                await BooqableOrderLine.createFromBooqableOrderLines(tmpOrder.lines), 
+                tmpOrder.number, 
+                tmpOrder.starts_at, 
+                tmpOrder.stops_at)
 
         } catch (err) {
-            return Promise.reject( { error: err })
+            return Promise.reject({ error: err })
         }
     }
 }
