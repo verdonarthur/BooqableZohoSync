@@ -1,9 +1,33 @@
 <template>
   <v-container fluid grid-list-xl>
-    <h1>Customers</h1>
-    <v-layout row justify-space-between>
-      <v-flex md11 s12>
-        <v-data-table :headers="headers" :items="customers" class="elevation-1">
+    <h1>Customers</h1>      
+      <div md12>
+        <v-btn
+          :loading="isSyncing"
+          :disabled="isSyncing"
+          color="blue"
+          medium
+          outline
+          @click="syncCustomer()"
+        >
+          Complete sync
+          <v-icon right dark>sync</v-icon>
+        </v-btn>
+        <v-btn
+          :loading="isSyncingZoho"
+          :disabled="isSyncingZoho"
+          color="blue"          
+          medium outline @click="syncCustomerZoho()" >Sync From Zoho<v-icon right dark>sync</v-icon>
+        </v-btn>
+        <v-btn
+          :loading="isSyncingBooqable"
+          :disabled="isSyncingBooqable"
+          color="blue"          
+          medium outline @click="syncCustomerBooqable()" >Sync From Booqable<v-icon right dark>sync</v-icon>
+        </v-btn>
+      </div>
+      <div>
+        <v-data-table :headers="headers" :items="customers">
           <template v-slot:items="props">
             <td>{{ props.item.displayName }}</td>
             <td class="text-xs-right">{{ props.item.email }}</td>
@@ -11,29 +35,7 @@
             <td class="text-xs-right">{{ props.item.booqableID }}</td>
           </template>
         </v-data-table>
-      </v-flex>
-      <v-flex>
-        <h2>Manual Sync</h2>
-        <v-btn
-          :loading="isSyncing"
-          :disabled="isSyncing"
-          color="blue"
-          medium block outline @click="syncCustomer()" >Sync<v-icon right dark>sync</v-icon>
-        </v-btn>
-        <!--<v-btn
-          :loading="isSyncing"
-          :disabled="isSyncing"
-          color="blue"          
-          medium block outline @click="syncCustomer()" >To Zoho<v-icon right dark>sync</v-icon>
-        </v-btn>
-        <v-btn
-          :loading="isSyncing"
-          :disabled="isSyncing"
-          color="blue"          
-          medium block outline @click="syncCustomer()" >To Booqable<v-icon right dark>sync</v-icon>
-        </v-btn>-->
-      </v-flex>
-    </v-layout>
+      </div>
   </v-container>
 </template>
 
@@ -41,21 +43,47 @@
 import Customer from "../class/Customer";
 
 export default {
-  components: {},
+  components: {},  
   async created() {
     try {
-      let data = await Customer.getAll();
-      this.customers = data;
+      this.customers = await Customer.getAll();
     } catch (err) {
       console.log(err);
     }
   },
   methods: {
-    syncCustomer() {
+    async syncCustomer() {
       this.isSyncing = true;
-      Customer.sync().then(data => {
+      try {
+        await Customer.sync();
+        this.customers = await Customer.getAll();
         this.isSyncing = false;
-      });
+      } catch (e) {
+        this.isSyncing = false;
+        console.log(e);
+      }
+    },
+    async syncCustomerZoho() {
+      this.isSyncingZoho = true;
+      try {
+        await Customer.syncFrom("zoho");
+        this.customers = await Customer.getAll();
+        this.isSyncingZoho = false;
+      } catch (e) {
+        this.isSyncingZoho = false;
+        console.log(e);
+      }
+    },
+    async syncCustomerBooqable() {
+      this.isSyncingBooqable = true;
+      try {
+        await Customer.syncFrom("booqable");
+        this.customers = await Customer.getAll();
+        this.isSyncingBooqable = false;
+      } catch (e) {
+        this.isSyncingBooqable = false;
+        console.log(e);
+      }
     }
   },
   data: () => {
@@ -71,7 +99,9 @@ export default {
         { text: "Booqable ID", value: "booqableID" }
       ],
       customers: [],
-      isSyncing: false
+      isSyncing: false,
+      isSyncingBooqable:false,
+      isSyncingZoho:false
     };
   }
 };

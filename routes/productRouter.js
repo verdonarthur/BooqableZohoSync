@@ -28,7 +28,7 @@ router.get('/sync', async (req, res, next) => {
     try {
         let productSync = new ProductSync()
         let data = await productSync.completeSync(ProductSync.SYSTEM.ZOHO)
-        res.sendStatus(200).send(JSON.stringify(data))
+        res.sendStatus(200).send(data)
     } catch (e) {
         res.sendStatus(500).send(e)
         logger.error(e)
@@ -53,7 +53,7 @@ router.get('/sync/:system', async (req, res, next) => {
             default:
             break;
         }
-        res.send(JSON.stringify(data))
+        res.send(data)
 
     } catch (e) {
         res.sendStatus(500).send(e)

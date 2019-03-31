@@ -1,35 +1,31 @@
 <template>
-  <div>
+  <v-container fluid grid-list-xl>
     <h1>Products</h1>
-    <v-layout row justify-space-between>
-      <v-flex md11 s12>
-        <v-data-table :headers="headers" :items="products" class="elevation-1">
-          <template v-slot:items="props">
-            <td>{{ props.item.name }}</td>
-            <td class="text-xs-right">{{ props.item.priceInCents }}</td>
-            <td class="text-xs-right">{{ props.item.sku }}</td>
-            <td class="text-xs-right">{{ props.item.zohoID }}</td>
-            <td class="text-xs-right">{{ props.item.booqableID }}</td>
-          </template>
-        </v-data-table>
-      </v-flex>
-      <v-flex>
-        <h2>Manual Sync</h2>
-        <v-btn
-          :loading="isSyncing"
-          :disabled="isSyncing"
-          color="blue"
-          medium
-          block
-          outline
-          @click="syncCustomer()"
-        >
-          Sync
-          <v-icon right dark>sync</v-icon>
-        </v-btn>
-      </v-flex>
-    </v-layout>
-  </div>
+    <div md12>
+      <v-btn
+        :loading="isSyncing"
+        :disabled="isSyncing"
+        color="blue"
+        medium
+        outline
+        @click="syncProducts()"
+      >
+        Complete sync
+        <v-icon right dark>sync</v-icon>
+      </v-btn>
+    </div>
+    <div md12>
+      <v-data-table :headers="headers" :items="products">
+        <template v-slot:items="props">
+          <td>{{ props.item.name }}</td>
+          <td class="text-xs-right">{{ props.item.priceInCents }}</td>
+          <td class="text-xs-right">{{ props.item.sku }}</td>
+          <td class="text-xs-right">{{ props.item.zohoID }}</td>
+          <td class="text-xs-right">{{ props.item.booqableID }}</td>
+        </template>
+      </v-data-table>
+    </div>
+  </v-container>
 </template>
 
 <script>
@@ -39,18 +35,23 @@ export default {
   components: {},
   async created() {
     try {
-      let data = await Product.getAll();
-      this.products = data;
+      this.products = await Product.getAll();
     } catch (err) {
       console.log(err);
     }
   },
   methods: {
-    syncProducts() {
+    async syncProducts() {
       this.isSyncing = true;
-      Product.sync().then(data => {
+
+      try {
+        await Product.sync();
+        this.products = await Product.getAll();
         this.isSyncing = false;
-      });
+      } catch (err) {
+        console.log(err);
+        this.isSyncing = false;
+      }
     }
   },
   data: () => {

@@ -28,6 +28,12 @@ module.exports = class Zoho {
                 method: 'GET',
                 headers: this.HEADERS,
             })
+
+            // will detect if an error occure on zoho
+            if(res.code && res.message){
+                throw new Error(res)
+            }
+
             res = await res.json()
             return res
         } catch (e) {
@@ -54,6 +60,12 @@ module.exports = class Zoho {
                 headers: headers,
                 body: form
             })
+
+            // will detect if an error occure on zoho
+            if(res.code && res.message){
+                throw new Error(res)
+            }
+
             res = await res.json()
             return res
         } catch (e) {
@@ -80,6 +92,11 @@ module.exports = class Zoho {
                 headers: headers,
                 body:form
             })
+
+            // will detect if an error occure on zoho
+            if(res.code && res.message){
+                throw new Error(res)
+            }
             
             res = await res.json()
             return res

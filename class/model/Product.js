@@ -48,7 +48,7 @@ productSchema.statics.getAllFromZoho = async function () {
         res = await zoho.fetch('items', { page: indexPage })
         items = items.concat(res.items)
         indexPage++
-    } while (res.page_context.has_more_page)
+    } while (res.page_context && res.page_context.has_more_page)
     return items
 }
 

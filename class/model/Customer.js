@@ -46,7 +46,8 @@ customerSchema.statics.getAllFromZoho = async function () {
         res = await zoho.fetch('contacts', { page: indexPage })
         contacts = contacts.concat(res.contacts)
         indexPage++
-    } while (res.page_context.has_more_page)
+    } while (res.page_context && res.page_context.has_more_page)
+    
     return contacts
 }
 
@@ -165,7 +166,9 @@ customerSchema.methods.saveToZoho = async function () {
         // if contact exist already on zoho
         if (this.zohoID) {
             let res = await zoho.update('contacts', this.zohoID, zohoCustomer)
-            if (res.code != 0) {
+
+            // code 102027 is for same email check
+            if (res.code != 0 && res.code != 102027) {
                 throw new Error(JSON.stringify(res))
             }
             return res

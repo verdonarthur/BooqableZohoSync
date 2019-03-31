@@ -1,7 +1,7 @@
-let Product = require("./class/model/Product")
+let Customer = require("./class/model/Customer")
 
 async function main() {
-    console.log(await Product.getAllFromZoho())
+    console.log(await Customer.getAllFromZoho())
 }
 
 main()

@@ -1,18 +1,33 @@
 <template>
-  <div>
+  <v-container fluid grid-list-xl>
     <h1>Invoices</h1>
-    <v-data-table :headers="headers" :items="products" class="elevation-1">
-      <template v-slot:items="props">
-        <td>{{ props.item.reference }}</td>
-        <td class="text-xs-right">{{ props.item.startDate }}</td>
-        <td class="text-xs-right">{{ props.item.stopDate }}</td>
-      </template>
-    </v-data-table>
-  </div>
+    <div md12>
+      <v-btn
+        :loading="isSyncing"
+        :disabled="isSyncing"
+        color="blue"
+        medium
+        outline
+        @click="createInvoiceFromBooqable()"
+      >
+        Create Invoice From Booqable
+        <v-icon right dark>sync</v-icon>
+      </v-btn>
+    </div>
+    <div>
+      <v-data-table :headers="headers" :items="products" class="elevation-1">
+        <template v-slot:items="props">
+          <td>{{ props.item.reference }}</td>
+          <td class="text-xs-right">{{ props.item.startDate }}</td>
+          <td class="text-xs-right">{{ props.item.stopDate }}</td>
+        </template>
+      </v-data-table>
+    </div>
+  </v-container>
 </template>
 
 <script>
-import Invoices from "../class/Invoice";
+import Invoice from "../class/Invoice";
 
 export default {
   components: {},
@@ -22,6 +37,20 @@ export default {
       this.invoices = data;
     } catch (err) {
       console.log(err);
+    }
+  },
+  methods: {
+    async createInvoiceFromBooqable() {
+      this.isSyncing = true;
+
+      try {
+        await Invoice.exportToZoho();
+        this.invoices = await Invoice.getAll();
+        this.isSyncing = false;
+      } catch (err) {
+        console.log(err);
+        this.isSyncing = false;
+      }
     }
   },
   data: () => {
@@ -35,7 +64,9 @@ export default {
         { text: "startDate", value: "startDate" },
         { text: "stopDate", value: "stopDate" }
       ],
-      products: []
+      products: [],
+
+      isSyncing: false
     };
   }
 };

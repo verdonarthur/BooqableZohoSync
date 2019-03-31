@@ -91,7 +91,7 @@ let invoiceSchema = new mongoose.Schema({
         type:Date
     },
     nbrLocationDay: {
-        type: number
+        type: Number
     },
     reference: {
         type: String,

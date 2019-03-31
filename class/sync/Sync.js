@@ -153,9 +153,11 @@ module.exports = class Sync {
                 default:
                     break;
             }
+
+            return Promise.resolve()
         } catch (err) {
             logger.error(err)
-            return err
+            return Promise.reject()
         }
     }
 }

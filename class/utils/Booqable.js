@@ -60,6 +60,7 @@ module.exports = class Booqable {
                 headers: this.HEADERS,
                 body: JSON.stringify(object)
             })
+
             return await res.json()
         } catch (e) {
             return Promise.reject( { error: e })

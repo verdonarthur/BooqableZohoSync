@@ -1,8 +1,11 @@
 class BasicResource {
+    static get URL_BACKEND(){
+        return "//localhost:3001"
+    }
 
-    static async getAll(resource) {
+    static async getRequest(url) {
         try {
-            let data = await fetch(`//localhost:3001/${resource}/`, { accept: 'application/json' })
+            let data = await fetch(url, { accept: 'application/json' })
             return data.json()
         } catch (e) {
             console.log(e)
@@ -10,14 +13,16 @@ class BasicResource {
         }
     }
 
+    static async getAll(resource) {
+        return this.getRequest(`${this.URL_BACKEND}/${resource}/`)
+    }
+
     static async sync(resource){
-        try {
-            let data = await fetch(`//localhost:3001/${resource}/sync`, { accept: 'application/json' })
-            return data.json()
-        } catch (e) {
-            console.log(e)
-            return Promise.reject()
-        }
+        return this.getRequest(`${this.URL_BACKEND}/${resource}/sync`)
+    }
+
+    static async syncFrom(resource, system) {
+        return this.getRequest(`${this.URL_BACKEND}/${resource}/sync/${system}`)
     }
 }
 
