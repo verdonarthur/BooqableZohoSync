@@ -1,4 +1,5 @@
-const config = require('./config')
+if(process.env.NODE_ENV !== "production")
+    const config = require('./config')
 
 module.exports = {
     zoho_api_address: process.env.ZOHO_API_ADDRESS || config.zoho_api_address,
