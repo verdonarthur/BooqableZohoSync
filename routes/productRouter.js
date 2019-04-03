@@ -27,8 +27,8 @@ router.get('/', async (req, res, next) => {
 router.get('/sync', async (req, res, next) => {
     try {
         let productSync = new ProductSync()
-        let data = await productSync.completeSync(ProductSync.SYSTEM.ZOHO)
-        res.sendStatus(200).send(data)
+        await productSync.completeSync(ProductSync.SYSTEM.ZOHO)
+        res.sendStatus(200).send({})
     } catch (e) {
         res.sendStatus(500).send(e)
         logger.error(e)
