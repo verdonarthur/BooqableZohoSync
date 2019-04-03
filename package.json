@@ -6,9 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "concurrently \"node main.js\"",
-    "dev": "nodemon main.js",
-    "heroku-prebuild":"npm install -g @vue/cli && cd client && npm i",
-    "build": "cd client && npm run build"
+    "dev": "nodemon main.js"
   },
   "author": "",
   "license": "ISC",
