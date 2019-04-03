@@ -1,6 +1,6 @@
 class BasicResource {
     static get URL_BACKEND(){
-        return window.location.href
+        return window.location.origin
     }
 
     static async getRequest(url) {
