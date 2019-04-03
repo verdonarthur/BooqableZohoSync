@@ -1,6 +1,6 @@
 class BasicResource {
     static get URL_BACKEND(){
-        return process.env.MONGODB_URI || "//localhost:3001"
+        return window.location.href
     }
 
     static async getRequest(url) {
