@@ -1,7 +1,7 @@
 const winston = require('winston');
 require('winston-mongodb');
 
-const config = require('../../config/config')
+const config = require('../../config/generatedConfig')
 
 // TODO REMOVE WHEN FIXED
 // FIX FOR THIS ISSUE https://github.com/winstonjs/winston/issues/1130

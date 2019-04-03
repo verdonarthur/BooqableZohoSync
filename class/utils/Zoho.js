@@ -2,7 +2,7 @@ const fetch = require('node-fetch');
 const FormData = require('form-data');
 const Util = require('./Utils')
 
-const config = require('../../config/config')
+const config = require('../../config/generatedConfig')
 
 /**
  * 
