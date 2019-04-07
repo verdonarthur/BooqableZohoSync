@@ -2,6 +2,76 @@ const mongoose = require('mongoose')
 const Zoho = require('../utils/Zoho')
 const Booqable = require('../utils/Booqable')
 
+// ------------------------------------------ ADDRESS SCHEMA -------------------------------------------------
+
+let addressSchema = new mongoose.Schema({
+    firstName: {
+        type: String
+    },
+    lastName: {
+        type: String
+    },
+    street1: {
+        type: String
+    },
+    street2: {
+        type: String
+    },
+    city: {
+        type: String
+    },
+    state: {
+        type: String
+    },
+    zipcode: {
+        type: Number
+    },
+    country: {
+        type: String
+    }
+}, { _id: false })
+// ------------------------------------------ STATICS METHODS -------------------------------------------------
+
+/**
+ * convert a zoho address to a local db address
+ * @param {*} zohoAddress 
+ */
+addressSchema.statics.fromZoho = function (zohoAddress) {
+    return new Address({
+        firstName: "",
+        lastName: zohoAddress.attention,
+        street1: zohoAddress.address,
+        street2: zohoAddress.street2,
+        city: zohoAddress.city,
+        state: zohoAddress.state,
+        zipcode: zohoAddress.zip,
+        country: zohoAddress.country
+    })
+}
+
+/**
+ * convert a booqable address to a local db address
+ * @param {*} zohoAddress 
+ */
+addressSchema.statics.fromBooqable = function (booqableAddress) {
+    return new Address({
+        firstName: booqableAddress.first_name,
+        lastName: booqableAddress.last_name,
+        street1: booqableAddress.address1,
+        street2: booqableAddress.address2,
+        city: booqableAddress.city,
+        state: booqableAddress.region,
+        zipcode: booqableAddress.zipcode,
+        country: booqableAddress.country
+    })
+}
+
+// ------------------------------------------ METHODS -------------------------------------------------
+
+const Address = mongoose.model('Address', addressSchema)
+
+// ------------------------------------------ CUSTOMER SCHEMA -------------------------------------------------
+
 let customerSchema = new mongoose.Schema({
     displayName: {
         type: String,
@@ -12,6 +82,9 @@ let customerSchema = new mongoose.Schema({
         type: String,
         required: true,
         match: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+    },
+    billingAddress: {
+        type: addressSchema
     },
     booqableID: {
         type: String,
@@ -47,7 +120,7 @@ customerSchema.statics.getAllFromZoho = async function () {
         contacts = contacts.concat(res.contacts)
         indexPage++
     } while (res.page_context && res.page_context.has_more_page)
-    
+
     return contacts
 }
 
@@ -81,13 +154,20 @@ customerSchema.statics.findByBooqableID = async function (booqableID) {
  * 
  * @param {*} zohoContact
  */
-customerSchema.statics.fromZoho = function (zohoContact) {
+customerSchema.statics.fromZoho = async function (zohoContact) {
     let zohoID = zohoContact.contact_id
     let zohoName = zohoContact.contact_name
     let zohoEmail = zohoContact.email
     let zohoLastUpdate = zohoContact.last_modified_time
 
-    return new Customer({ displayName: zohoName, email: zohoEmail, zohoID: zohoID, zohoLastUpdate: zohoLastUpdate })
+    try {
+        let zoho = new Zoho()
+        let fetchedZohoContact = (await zoho.fetchOne('contacts', zohoID)).contact
+        billingAddress = Address.fromZoho(fetchedZohoContact.billing_address)
+        return new Customer({ displayName: zohoName, email: zohoEmail, zohoID: zohoID, zohoLastUpdate: zohoLastUpdate, billingAddress: billingAddress })
+    } catch (e) {
+        return new Customer({ displayName: zohoName, email: zohoEmail, zohoID: zohoID, zohoLastUpdate: zohoLastUpdate, billingAddress: {} })
+    }
 }
 
 /**
@@ -95,13 +175,20 @@ customerSchema.statics.fromZoho = function (zohoContact) {
  * 
  * @param {*} booqableCustomer
  */
-customerSchema.statics.fromBooqable = function (booqableCustomer) {
+customerSchema.statics.fromBooqable = async function (booqableCustomer) {
     let booqableID = booqableCustomer.id
     let booqableDisplayName = booqableCustomer.name
     let booqableEmail = booqableCustomer.email
     let booqableLastUpdate = booqableCustomer.updated_at
 
-    return new Customer({ displayName: booqableDisplayName, email: booqableEmail, booqableID: booqableID, booqableLastUpdate: booqableLastUpdate })
+    try {
+        let booqable = new Booqable()
+        let fetchedBooqableContact = (await booqable.fetchOne('customers', booqableID)).customer
+        billingAddress = Address.fromBooqable(fetchedBooqableContact.properties.find((ele) => { return ele.type == "Property::Address" && ele.name == "Main" }))
+        return new Customer({ displayName: booqableDisplayName, email: booqableEmail, booqableID: booqableID, booqableLastUpdate: booqableLastUpdate, billingAddress: billingAddress })
+    } catch (e) {
+        return new Customer({ displayName: booqableDisplayName, email: booqableEmail, booqableID: booqableID, booqableLastUpdate: booqableLastUpdate, billingAddress: {} })
+    }
 }
 
 // ------------------------------------------ METHODS -------------------------------------------------
@@ -112,6 +199,7 @@ customerSchema.statics.fromBooqable = function (booqableCustomer) {
 customerSchema.methods.setFieldToSync = function (customer) {
     this.email = customer.email
     this.displayName = customer.displayName
+    this.billingAddress = customer.billingAddress
     if (customer.zohoLastUpdate) {
         this.zohoLastUpdate = new Date(customer.zohoLastUpdate)
     }
@@ -129,7 +217,21 @@ customerSchema.methods.saveToBooqable = async function () {
 
     let booqableCustomer = {
         name: this.displayName,
-        email: this.email
+        email: this.email,
+        properties_attributes: [
+            {
+                type: "Property::Address",
+                name: "Main",
+                first_name: this.billingAddress.firstName,
+                last_name: this.billingAddress.lastName,
+                address1: this.billingAddress.street1,
+                address2: this.billingAddress.street2,
+                zipcode: this.billingAddress.zipcode,
+                city: this.billingAddress.city,
+                region: this.billingAddress.state,
+                country: this.billingAddress.country
+            }
+        ]
     }
 
     try {
@@ -161,16 +263,33 @@ customerSchema.methods.saveToZoho = async function () {
             {
                 email: this.email
             }],
+        billing_address: {
+            attention: this.billingAddress.lastName,
+            address: this.billingAddress.street1,
+            street2: this.billingAddress.street2,
+            zip: this.billingAddress.zipcode,
+            city: this.billingAddress.city,
+            state: this.billingAddress.state,
+            country: this.billingAddress.country
+        }
     }
-    try {
+    try {        
         // if contact exist already on zoho
         if (this.zohoID) {
+
+            // if email is same, remove it to prevent error 102027 during update
+            let fetchedZohoCustomer = (await zoho.fetchOne('contacts', this.zohoID)).contact
+            if(zohoCustomer.contact_persons[0].email == fetchedZohoCustomer.email){
+                delete zohoCustomer.contact_persons
+            }
+
             let res = await zoho.update('contacts', this.zohoID, zohoCustomer)
 
             // code 102027 is for same email check
             if (res.code != 0 && res.code != 102027) {
                 throw new Error(JSON.stringify(res))
             }
+
             return res
         } else {
             let res = await zoho.create('contacts', zohoCustomer)

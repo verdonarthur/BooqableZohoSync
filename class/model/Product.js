@@ -82,7 +82,7 @@ productSchema.statics.findByBooqableID = async function (booqableID) {
  * 
  * @param {*} zohoItem
  */
-productSchema.statics.fromZoho = function (zohoItem) {
+productSchema.statics.fromZoho = async function (zohoItem) {
     let zohoID = zohoItem.item_id
     let zohoName = zohoItem.name
     let zohoPrice = zohoItem.rate * 100
@@ -97,7 +97,7 @@ productSchema.statics.fromZoho = function (zohoItem) {
  * 
  * @param {*} booqableProduct
  */
-productSchema.statics.fromBooqable = function (booqableProduct) {
+productSchema.statics.fromBooqable = async function (booqableProduct) {
     let booqableID = booqableProduct.id
     let booqableName = booqableProduct.name
     let booqableSKU = booqableProduct.sku

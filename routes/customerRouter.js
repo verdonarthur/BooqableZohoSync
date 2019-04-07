@@ -20,7 +20,7 @@ router.get('/', async (req, res, next) => {
     try {
         res.send(await Customer.find())
     } catch (e) {
-        res.sendStatus('500').send(e)
+        res.status(500).send(e)
         logger.error(e)
     }
 })
@@ -31,7 +31,7 @@ router.get('/sync', async (req, res, next) => {
         await customerSync.completeSync(CustomerSync.SYSTEM.ZOHO)
         res.send({})
     } catch (e) {
-        res.sendStatus(500).send(e)
+        res.status(500).send(e)
         logger.error(e)
     }
 })
@@ -55,7 +55,7 @@ router.get('/sync/:system', async (req, res, next) => {
         res.send(JSON.stringify(data))
 
     } catch (e) {
-        res.sendStatus(500).send(e)
+        res.status(500).send(e)
         logger.error(e)
     }
 })

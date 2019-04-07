@@ -5,6 +5,8 @@ const Utils = require('../utils/Utils')
 const BooqableOrder = require('./BooqableOrder')
 const Customer = require('./Customer')
 
+// ------------------------------------------ INVOICE LINE SCHEMA -------------------------------------------------
+
 let invoiceLineSchema = new mongoose.Schema({
     zohoItemID: {
         type: String,
@@ -81,7 +83,7 @@ invoiceLineSchema.methods.getProductLinked = async function () {
 
 const InvoiceLine = mongoose.model('InvoiceLine', invoiceLineSchema)
 
-
+// ------------------------------------------ INVOICE SCHEMA -------------------------------------------------
 
 let invoiceSchema = new mongoose.Schema({
     booqableID: {
@@ -147,9 +149,11 @@ invoiceSchema.statics.saveBooqableOrderToLocalDB = async function () {
                 lines: InvoiceLine.convertFromBooqableOrderLineArray(booqableOrder.lines)
             })
 
-            // TODO : ARCHIVE ORDER
-
             await localDBInvoice.save()
+
+            // ARCHIVE ORDER
+            let booqable = new Booqable()
+            await booqable.specialPostRequest('orders',booqableOrder.id, 'archive')
         }
     } catch (err) {
         return Promise.reject({ error: err })
@@ -162,6 +166,9 @@ invoiceSchema.statics.saveBooqableOrderToLocalDB = async function () {
  * Will save or update the record to zoho
  */
 invoiceSchema.methods.saveToZoho = async function () {
+    if(this.isSaveInZoho)
+        return Promise.resolve()
+    
     let zoho = new Zoho()
 
     try {

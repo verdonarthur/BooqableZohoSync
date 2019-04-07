@@ -14,20 +14,39 @@ module.exports = class Booqable {
     }
 
     /**
+     * Default request methode
+     * @param {*} method 
+     * @param {*} url 
+     */
+    async request(method, url, body = JSON.stringify({})) {
+        try {
+            let res
+            if (method === 'GET') {
+                res = await fetch(url, {
+                    method: method,
+                    headers: this.HEADERS
+                })
+            } else {
+                res = await fetch(url, {
+                    method: method,
+                    headers: this.HEADERS,
+                    body: body
+                })
+            }
+
+            return await res.json()
+        }
+        catch (e) {
+            return Promise.reject({ error: e })
+        }
+    }
+
+    /**
      * return all record From Booqable by the type in param
      * @param {*} type 
      */
     async fetch(type) {
-        try {
-            let res = await fetch(`${this.API_ADDRESS}${type}?api_key=${this.APIKEY}`, {
-                method: 'GET',
-                headers: this.HEADERS,
-            })
-            return await res.json()
-
-        } catch (e) {
-            return Promise.reject( { error: e })
-        }
+        return await this.request('GET', `${this.API_ADDRESS}${type}?api_key=${this.APIKEY}`)
     }
 
     /**
@@ -36,16 +55,7 @@ module.exports = class Booqable {
      * @param {*} id
      */
     async fetchOne(type, id) {
-        try {
-            let res = await fetch(`${this.API_ADDRESS}${type}/${id}?api_key=${this.APIKEY}`, {
-                method: 'GET',
-                headers: this.HEADERS,
-            })
-            return await res.json()
-
-        } catch (e) {
-            return Promise.reject( { error: e })
-        }
+        return await this.request('GET', `${this.API_ADDRESS}${type}/${id}?api_key=${this.APIKEY}`)
     }
 
     /**
@@ -53,18 +63,7 @@ module.exports = class Booqable {
      * @param {*} type 
      */
     async create(type, object) {
-        
-        try {
-            let res = await fetch(`${this.API_ADDRESS}${type}?api_key=${this.APIKEY}`, {
-                method: 'POST',
-                headers: this.HEADERS,
-                body: JSON.stringify(object)
-            })
-
-            return await res.json()
-        } catch (e) {
-            return Promise.reject( { error: e })
-        }
+        return await this.request('POST', `${this.API_ADDRESS}${type}?api_key=${this.APIKEY}`, JSON.stringify(object))
     }
 
     /**
@@ -72,16 +71,7 @@ module.exports = class Booqable {
      * @param {*} type 
      */
     async update(type, id, object) {
-        try {
-            let res = await fetch(`${this.API_ADDRESS}${type}/${id}?api_key=${this.APIKEY}`, {
-                method: 'PUT',
-                headers: this.HEADERS,
-                body: JSON.stringify(object)
-            })
-            return await res.json()
-        } catch (e) {
-            return Promise.reject( { error: e })
-        }
+        return await this.request('PUT', `${this.API_ADDRESS}${type}/${id}?api_key=${this.APIKEY}`, JSON.stringify(object))
     }
 
     /**
@@ -89,15 +79,17 @@ module.exports = class Booqable {
      * @param {*} type 
      * @param {*} id 
      */
-    async delete(type, id){
-        try {
-            let res = await fetch(`${this.API_ADDRESS}${type}/${id}/archive?api_key=${this.APIKEY}`, {
-                method: 'DELETE',
-                headers: this.HEADERS,
-            })
-            return await res.json()
-        } catch (e) {
-            return Promise.reject( { error: e })
-        }
+    async delete(type, id) {
+        return await this.request('DELETE', `${this.API_ADDRESS}${type}/${id}/archive?api_key=${this.APIKEY}`)
+    }
+
+    /**
+     * A special post request mainly used for managing order status
+     * @param {*} type 
+     * @param {*} id 
+     * @param {*} action 
+     */
+    async specialPostRequest(type, id, action) {
+        return await this.request('POST', `${this.API_ADDRESS}${type}/${id}/${action}?api_key=${this.APIKEY}`)
     }
 }

@@ -34,11 +34,11 @@ module.exports = class Sync {
             for (let systemObject of systemObjects) {
                 switch (system) {
                     case SYSTEM.ZOHO:
-                        object = TheTypeClass.fromZoho(systemObject)
+                        object = await TheTypeClass.fromZoho(systemObject)
                         isInDB = await TheTypeClass.findByZohoID(object.zohoID)
                         break;
                     case SYSTEM.BOOQABLE:
-                        object = TheTypeClass.fromBooqable(systemObject)
+                        object = await TheTypeClass.fromBooqable(systemObject)
                         isInDB = await TheTypeClass.findByBooqableID(object.booqableID)
                         break;
                 }

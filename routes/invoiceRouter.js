@@ -7,7 +7,7 @@ router.get('/', async (req, res, next) => {
     try {
         res.send(await Invoice.find())
     } catch (e) {
-        res.sendStatus('500').send(e)
+        res.status(500).send(e)
         logger.error(JSON.stringify(e))
     }
 })
