@@ -36,7 +36,7 @@ app.use((req, res, next) => {
 if (process.env.NODE_ENV != 'production')
     new CronSyncManager('http://localhost', port)
 else
-    new CronSyncManager('https://localhost', port)
+    new CronSyncManager('http://localhost', port)
 
 
 
